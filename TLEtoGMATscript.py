@@ -27,9 +27,9 @@ def tle_to_gmat(tle_file, gmat_file):
         line2 = lines[2].strip()
 
     satellite = twoline2rv(line1, line2, wgs84)
-    
-    # Convert mean motion (revs per day) to radians per minute, then to the SMA
-    mean_motion_rad_min = satellite.no_kozai * (2 * math.pi / 1440)  # 1440 minutes in a day
+    print(satellite.no_kozai)    
+    # Convert mean motion (revs per day) to radians per minute, then to the SMAprint(satellite.no_kozai)
+    mean_motion_rad_min = satellite.no_kozai/60 #* (2 * math.pi / 1440)
     mu = 398600.4418  # km^3/s^2
     sma = (mu / (mean_motion_rad_min ** 2)) ** (1/3)
     
