@@ -145,5 +145,6 @@ Propagate DefaultProp({satellite_name}) {{{satellite_name}.ElapsedDays = 1.0}};
 # Propagate DefaultProp({satellite_name}) {{}};
 # Example URL for the ISS.  Change the "CATNR" number to your satellite's catalog number.
 satellite_url = 'https://celestrak.org/NORAD/elements/gp.php?CATNR=25544&FORMAT=TLE'  
+#adjust the output file name as necessary
 gmat_file_path = 'iss_gmat.script'
 tle_to_gmat(satellite_url, gmat_file_path)
