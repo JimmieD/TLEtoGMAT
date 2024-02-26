@@ -39,7 +39,7 @@ def tle_to_gmat(tle_file, gmat_file):
     #    line2 = lines[2].strip()
 
     satellite = twoline2rv(line1, line2, wgs84)
-    print(satellite.no_kozai)    
+    #print(satellite.no_kozai)    
     # Convert mean motion (revs per day) to radians per minute, then to the SMAprint(satellite.no_kozai)
     mean_motion_rad_min = satellite.no_kozai/60 #* (2 * math.pi / 1440)
     mu = 398600.4418  # km^3/s^2
@@ -143,6 +143,7 @@ Propagate DefaultProp({satellite_name}) {{{satellite_name}.ElapsedDays = 1.0}};
 
 # Update the file paths as necessary
 # Propagate DefaultProp({satellite_name}) {{}};
-satellite_url = 'https://celestrak.com/NORAD/elements/stations.txt'  # Example URL, adjust as needed
+# Example URL for the ISS.  Change the "CATNR" number to your satellite's catalog number.
+satellite_url = 'https://celestrak.org/NORAD/elements/gp.php?CATNR=25544&FORMAT=TLE'  
 gmat_file_path = 'iss_gmat.script'
 tle_to_gmat(satellite_url, gmat_file_path)
