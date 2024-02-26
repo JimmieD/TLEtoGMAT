@@ -1,6 +1,8 @@
 from sgp4.io import twoline2rv
 from sgp4.earth_gravity import wgs84
 import math
+import requests
+import re
 
 def mean_to_true_anomaly(M, e, tolerance=1e-10, max_iterations=200):
     """Convert Mean Anomaly to True Anomaly for elliptical orbits."""
@@ -19,12 +21,22 @@ def mean_to_true_anomaly(M, e, tolerance=1e-10, max_iterations=200):
     true_anomaly = 2 * math.atan2(math.sqrt(1 + e) * math.sin(E / 2), math.sqrt(1 - e) * math.cos(E / 2))
     return math.degrees(true_anomaly) % 360
 
+def fetch_tle_from_celestrak(url):
+    response = requests.get(url)
+    response.raise_for_status()  # Raise an error for bad responses
+    lines = response.text.strip().split('\n')
+    return lines[0], lines[1], lines[2]
+
 def tle_to_gmat(tle_file, gmat_file):
-    with open(tle_file, 'r') as file:
-        lines = file.readlines()
-        satellite_name = lines[0].strip()
-        line1 = lines[1].strip()
-        line2 = lines[2].strip()
+    tle_data = fetch_tle_from_celestrak(satellite_url)
+    satellite_name = re.sub(r'\s*\([^)]*\)', '', tle_data[0]).strip()
+    line1 = tle_data[1]
+    line2 = tle_data[2]
+    #with open(tle_file, 'r') as file:
+    #    lines = file.readlines()
+    #    satellite_name = lines[0].strip()
+    #    line1 = lines[1].strip()
+    #    line2 = lines[2].strip()
 
     satellite = twoline2rv(line1, line2, wgs84)
     print(satellite.no_kozai)    
@@ -131,4 +143,6 @@ Propagate DefaultProp({satellite_name}) {{{satellite_name}.ElapsedDays = 1.0}};
 
 # Update the file paths as necessary
 # Propagate DefaultProp({satellite_name}) {{}};
-tle_to_gmat('iss.txt', 'iss_gmat.script')
+satellite_url = 'https://celestrak.com/NORAD/elements/stations.txt'  # Example URL, adjust as needed
+gmat_file_path = 'iss_gmat.script'
+tle_to_gmat(satellite_url, gmat_file_path)
